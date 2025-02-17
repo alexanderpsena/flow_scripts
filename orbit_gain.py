@@ -22,21 +22,47 @@ def calculate_power_loss(distance, frequency):
     loss = free_space_loss_constant + 20 * math.log10(distance) + 20 * math.log10(frequency) - 147.55
     return loss
 
-# FlowEngineering input variables
-num_satellites = 24  # Input: Number of satellites
-altitude = 500000  # Input: Altitude in meters (500 km)
-frequency = 2.4e9  # Input: Frequency in Hz (2.4 GHz)
+def run_model(inputs):
+    try:
+        # Extract inputs from FlowEngineering API
+        num_satellites = inputs['num_satellites']
+        altitude = inputs['altitude']
+        frequency = inputs['frequency']
 
-# Calculate distance between satellites
-distance = calculate_satellite_distance(num_satellites, altitude)
+        # Ensure valid input types
+        if not isinstance(num_satellites, int) or num_satellites <= 0:
+            raise ValueError("Number of satellites must be a positive integer.")
+        if not isinstance(altitude, (int, float)) or altitude <= 0:
+            raise ValueError("Altitude must be a positive number.")
+        if not isinstance(frequency, (int, float)) or frequency <= 0:
+            raise ValueError("Frequency must be a positive number.")
 
-# Calculate power loss
-power_loss = calculate_power_loss(distance, frequency)
+        # Calculate distance between satellites
+        distance = calculate_satellite_distance(num_satellites, altitude)
 
-# Output values
-output_distance = distance
-output_power_loss = power_loss
+        # Calculate power loss
+        power_loss = calculate_power_loss(distance, frequency)
 
-# Return results for FlowEngineering
-print(f"The distance between the satellites is: {output_distance:.2f} meters")
-print(f"The free-space path loss (power loss) is: {output_power_loss:.2f} dB")
+        # Return outputs in a dictionary format
+        return {
+            'output_distance': distance,
+            'output_power_loss': power_loss
+        }
+    except Exception as e:
+        # Handle errors and return as output
+        return {
+            'error': str(e)
+        }
+
+# Example input for testing
+inputs = {
+    'num_satellites': 24,  # Number of satellites
+    'altitude': 500000,    # Altitude in meters (500 km)
+    'frequency': 2.4e9     # Frequency in Hz (2.4 GHz)
+}
+
+# Call the model with inputs
+outputs = run_model(inputs)
+
+# Print results for debugging
+print(outputs)
