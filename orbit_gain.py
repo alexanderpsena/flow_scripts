@@ -22,19 +22,18 @@ def calculate_power_loss(distance, frequency):
     loss = free_space_loss_constant + 20 * math.log10(distance) + 20 * math.log10(frequency) - 147.55
     return loss
 
-# Default Values
+# Global Default Variables (these can be changed by Flow input)
 num_satellites = 24  # Default: Number of satellites
 altitude = 500000    # Default: Altitude in meters (500 km)
 frequency = 2.4e9     # Default: Frequency in Hz (2.4 GHz)
 
-# Outputs
+# Outputs (to be populated by the model)
 output_distance = None
 output_power_loss = None
 error = None
 
-# Function to run the model
 def run_model():
-    global output_distance, output_power_loss, error
+    global num_satellites, altitude, frequency, output_distance, output_power_loss, error
 
     try:
         # Calculate the distance between satellites
@@ -43,7 +42,7 @@ def run_model():
         # Calculate the free space power loss
         power_loss = calculate_power_loss(distance, frequency)
 
-        # Set output variables
+        # Set output variables for Flow
         output_distance = distance
         output_power_loss = power_loss
         error = None  # No error, successfully calculated
@@ -54,12 +53,13 @@ def run_model():
         output_distance = None
         output_power_loss = None
 
-# Run the model
+# Explicitly run the model
 run_model()
 
-# Output the results
+# Output results: Flow expects these as output variables
 if error:
     print(f"Error: {error}")
 else:
     print(f"The distance between the satellites is: {output_distance:.2f} meters")
     print(f"The free-space path loss (power loss) is: {output_power_loss:.2f} dB")
+
