@@ -18,19 +18,24 @@ def power_loss(distance_km, frequency=FREQUENCY):
     fspl = 20 * math.log10(distance_m) + 20 * math.log10(frequency) - 147.55  # FSPL formula
     return fspl
 
-def calculate_satellite_metrics(num_satellites, altitude):
-    """Calculate satellite distance and power loss based on inputs."""
+def calculate_satellite_metrics(inputs):
+    """Calculate satellite distance and power loss based on inputs for Flow Engineering."""
+    num_satellites = inputs.get("num_satellites", 14)
+    altitude = inputs.get("altitude", 450)
+    
     dist_between_sats = satellite_distance(num_satellites, altitude)
     loss = power_loss(dist_between_sats)
-    return dist_between_sats, loss
+    
+    return {
+        "distance_between_satellites_km": round(dist_between_sats, 2),
+        "power_loss_dB": round(loss, 2)
+    }
 
 if __name__ == "__main__":
     # Example parameters
-    num_satellites = 14  # Number of satellites in orbit
-    altitude = 450       # Orbital altitude in km
-    
-    dist_between_sats, loss = calculate_satellite_metrics(num_satellites, altitude)
+    inputs = {"num_satellites": 14, "altitude": 450}
+    results = calculate_satellite_metrics(inputs)
     
     # Output Results
-    print(f"Distance between satellites: {dist_between_sats:.2f} km")
-    print(f"Power loss (FSPL): {loss:.2f} dB")
+    print(f"Distance between satellites: {results['distance_between_satellites_km']} km")
+    print(f"Power loss (FSPL): {results['power_loss_dB']} dB")
