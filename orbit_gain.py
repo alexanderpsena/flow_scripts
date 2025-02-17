@@ -1,47 +1,38 @@
 import math
 
 # Constants
-EARTH_RADIUS = 6371  # in km
-FREQUENCY = 2.4e9    # in Hz (example: Wi-Fi, 2.4 GHz)
-SPEED_OF_LIGHT = 3e8 # in m/s
+speed_of_light = 3e8  # m/s
+free_space_loss_constant = 20 * math.log10(4 * math.pi / speed_of_light)  # Constant for free-space path loss
 
-def satellite_distance(num_satellites, altitude):
-    """Calculate the distance between two adjacent satellites in a circular orbit."""
-    orbit_radius = EARTH_RADIUS + altitude  # Total radius from Earth's center (km)
-    circumference = 2 * math.pi * orbit_radius  # Orbit circumference (km)
-    return circumference / num_satellites  # Distance between satellites (km)
+# Function to calculate the distance between satellites
+def calculate_satellite_distance(num_satellites, altitude):
+    # Earth's radius in meters
+    earth_radius = 6371e3  # meters
+    orbit_radius = earth_radius + altitude  # Orbit radius = Earth's radius + altitude
+    # Distance between satellites along the orbit, assuming they are evenly spaced
+    angular_distance = 2 * math.pi / num_satellites
+    # Distance between satellites (arc length)
+    satellite_distance = orbit_radius * angular_distance
+    return satellite_distance
 
-def power_loss(distance_km, frequency=FREQUENCY):
-    """Calculate free-space path loss (FSPL) in dB."""
-    distance_m = distance_km * 1000  # Convert km to meters
-    wavelength = SPEED_OF_LIGHT / frequency  # Calculate wavelength (m)
-    fspl = 20 * math.log10(distance_m) + 20 * math.log10(frequency) - 147.55  # FSPL formula
-    return fspl
+# Function to calculate free space power loss for isotropic antenna
+def calculate_power_loss(distance, frequency):
+    # Free space path loss formula (in dB)
+    wavelength = speed_of_light / frequency  # Wavelength in meters
+    loss = free_space_loss_constant + 20 * math.log10(distance) + 20 * math.log10(frequency) - 147.55
+    return loss
 
-def run(inputs=None):
-    """Function for Flow Engineering: Computes satellite spacing and power loss."""
-    if inputs is None or not isinstance(inputs, dict):
-        return {"error": "Invalid or missing inputs"}
-    
-    num_satellites = int(inputs.get("num_satellites", 14))  # Default to 14 if missing
-    altitude = float(inputs.get("altitude", 450))  # Default to 450 km if missing
-    
-    dist_between_sats = satellite_distance(num_satellites, altitude)
-    loss = power_loss(dist_between_sats)
-    
-    return {"outputs": {
-        "distance_between_satellites_km": round(dist_between_sats, 2),
-        "power_loss_dB": round(loss, 2)
-    }}
+# Input from the user
+num_satellites = int(input("Enter the number of satellites in the orbit: "))
+altitude = float(input("Enter the altitude of the orbit in kilometers: ")) * 1e3  # Convert km to meters
 
-if __name__ == "__main__":
-    # Example parameters
-    inputs = {"num_satellites": 14, "altitude": 450}
-    results = run(inputs)
-    
-    # Output Results
-    if "error" in results:
-        print(results["error"])
-    else:
-        print(f"Distance between satellites: {results['outputs']['distance_between_satellites_km']} km")
-        print(f"Power loss (FSPL): {results['outputs']['power_loss_dB']} dB")
+# Frequency set to 2.4 GHz (2.4e9 Hz)
+frequency = 2.4e9
+
+# Calculate distance between satellites
+distance = calculate_satellite_distance(num_satellites, altitude)
+print(f"The distance between the satellites is: {distance:.2f} meters")
+
+# Calculate power loss
+power_loss = calculate_power_loss(distance, frequency)
+print(f"The free-space path loss (power loss) is: {power_loss:.2f} dB")
