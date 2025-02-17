@@ -20,8 +20,8 @@ def power_loss(distance_km, frequency=FREQUENCY):
 
 def run(inputs):
     """Function for Flow Engineering: Computes satellite spacing and power loss."""
-    num_satellites = inputs["num_satellites"]
-    altitude = inputs["altitude"]
+    num_satellites = int(inputs.get("num_satellites", 14))  # Default to 14 if missing
+    altitude = float(inputs.get("altitude", 450))  # Default to 450 km if missing
     
     dist_between_sats = satellite_distance(num_satellites, altitude)
     loss = power_loss(dist_between_sats)
