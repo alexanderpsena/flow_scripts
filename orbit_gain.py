@@ -22,12 +22,10 @@ def calculate_power_loss(distance, frequency):
     loss = free_space_loss_constant + 20 * math.log10(distance) + 20 * math.log10(frequency) - 147.55
     return loss
 
-# Input from the user
-num_satellites = int(input("Enter the number of satellites in the orbit: "))
-altitude = float(input("Enter the altitude of the orbit in kilometers: ")) * 1e3  # Convert km to meters
-
-# Frequency set to 2.4 GHz (2.4e9 Hz)
-frequency = 2.4e9
+# FlowEngineering input variables
+num_satellites = 24  # Example input, this should be set as an input variable in FlowEngineering
+altitude = 500000  # Example input: 500 km (converted to meters)
+frequency = 2.4e9  # Frequency set to 2.4 GHz (2.4e9 Hz)
 
 # Calculate distance between satellites
 distance = calculate_satellite_distance(num_satellites, altitude)
@@ -36,3 +34,7 @@ print(f"The distance between the satellites is: {distance:.2f} meters")
 # Calculate power loss
 power_loss = calculate_power_loss(distance, frequency)
 print(f"The free-space path loss (power loss) is: {power_loss:.2f} dB")
+
+# Return results for FlowEngineering
+output_distance = distance
+output_power_loss = power_loss
