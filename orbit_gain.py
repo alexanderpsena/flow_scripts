@@ -23,18 +23,20 @@ def calculate_power_loss(distance, frequency):
     return loss
 
 # FlowEngineering input variables
-num_satellites = 24  # Example input, this should be set as an input variable in FlowEngineering
-altitude = 500000  # Example input: 500 km (converted to meters)
-frequency = 2.4e9  # Frequency set to 2.4 GHz (2.4e9 Hz)
+num_satellites = 24  # Input: Number of satellites
+altitude = 500000  # Input: Altitude in meters (500 km)
+frequency = 2.4e9  # Input: Frequency in Hz (2.4 GHz)
 
 # Calculate distance between satellites
 distance = calculate_satellite_distance(num_satellites, altitude)
-print(f"The distance between the satellites is: {distance:.2f} meters")
 
 # Calculate power loss
 power_loss = calculate_power_loss(distance, frequency)
-print(f"The free-space path loss (power loss) is: {power_loss:.2f} dB")
 
-# Return results for FlowEngineering
+# Output values
 output_distance = distance
 output_power_loss = power_loss
+
+# Return results for FlowEngineering
+print(f"The distance between the satellites is: {output_distance:.2f} meters")
+print(f"The free-space path loss (power loss) is: {output_power_loss:.2f} dB")
